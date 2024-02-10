@@ -1,0 +1,3 @@
+<Files ~ '[.](css|js|ttf|woff2?)$'>
+  Allow from all
+</Files>

@@ -1,0 +1,5 @@
+{
+  "description": "Math typesetting library for the web by Khan Academy.",
+  "license": "GPL-3.0-or-later",
+  "name": "mecha-cms/x.katex"
+}
