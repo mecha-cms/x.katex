@@ -159,24 +159,10 @@ This one is ugly, but it conforms to [this](https://spec.commonmark.org/0.31.2#e
 ~~~ .md
 - The notation
   <span>
-  $a \lt b$
-  </span> means that
-  <span>
-  $a$
-  </span> is <strong>less than</strong>
-  <span>
-  $b$
-  </span>.
+  $a \lt b$</span> means that <span>$a$</span> is <strong>less than</strong> <span>$b$</span>.
 - The notation
   <span>
-  $a \gt b$
-  </span> means that
-  <span>
-  $a$
-  </span> is <strong>greater than</strong>
-  <span>
-  $b$
-  </span>.
+  $a \gt b$</span> means that <span>$a$</span> is <strong>greater than</strong> <span>$b$</span>.
 ~~~
 
  [^1]: As documented in the [HTML block specification](https://spec.commonmark.org/0.31.2#html-blocks).
