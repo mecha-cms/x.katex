@@ -1,4 +1,3 @@
-/* eslint no-constant-condition:0 */
 const findEndOfMath = function(delimiter, text, startIndex) {
     // Adapted from
     // https://github.com/Khan/perseus/blob/master/src/perseus-markdown.jsx
@@ -63,9 +62,12 @@ const splitAtDelimiters = function(text, delimiters) {
         const math = amsRegex.test(rawData)
             ? rawData
             : text.slice(delimiters[i].left.length, index);
+        let previousData = data.slice(-1).pop(),
+            // Treat current data as plain text if previous data ends with a word or a number with optional space
+            ignore = previousData && /(\w|\d\s)$/.test(previousData.data) && rawData.slice(-1) === '$';
         data.push({
-            type: "math",
-            data: math,
+            type: ignore ? "text" : "math",
+            data: ignore ? rawData : math,
             rawData,
             display: delimiters[i].display,
         });
@@ -73,6 +75,13 @@ const splitAtDelimiters = function(text, delimiters) {
     }
 
     if (text !== "") {
+        let previousData = data.slice(-1).pop(),
+            // Treat previous data as plain text if current data starts with a word or a number with optional space
+            ignore = previousData && /^(\s\d|\w)/.test(text) && previousData.rawData.slice(-1) === '$';
+        if (ignore) {
+            data[data.length - 1].type = "text";
+            data[data.length - 1].data = previousData.rawData;
+        }
         data.push({
             type: "text",
             data: text,

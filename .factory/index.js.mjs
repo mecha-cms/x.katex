@@ -1,6 +1,8 @@
 import katex from 'katex';
 import renderMathInElement from './_/auto-render.mjs';
 
+import './_/mhchem.mjs';
+
 katex.__render = source => {
     renderMathInElement(source, {
         delimiters: [
@@ -13,11 +15,10 @@ katex.__render = source => {
     });
 };
 
-window.katex = katex;
-
 window.addEventListener('DOMContentLoaded', () => {
     katex.__render(document.body);
 }, false);
 
 import './_/copy-tex.js';
-import './_/mhchem.js';
+
+export default katex;
