@@ -12,41 +12,173 @@ version: 1.0.0
 KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web. It supports much (but not all) of
 LaTeX and many LaTeX packages. See the list of [supported functions](https://katex.org/docs/supported.html).
 
-### Syntax
+### Usage
 
-Equations are generally written between the `$` token, or between the `\(` and `\)` tokens:
+Equations are generally written between `$` token, or between `\(` and `\)` tokens:
 
 ~~~ .tex
-Einstein went on to present his findings mathematically: energy ($E$) equals mass ($m$) times the speed of light ($c$) squared, or $E=mc^2$.
+The formula $E=mc^2$ defines the energy $E$ of a particle in its rest frame as the product of mass ($m$) with the speed of light squared ($c^2$).
 ~~~
 
 ~~~ .tex
-Einstein went on to present his findings mathematically: energy (\(E\)) equals mass (\(m\)) times the speed of light (\(c\)) squared, or \(E=mc^2\).
+The formula \(E=mc^2\) defines the energy \(E\) of a particle in its rest frame as the product of mass (\(m\)) with the speed of light squared (\(c^2\)).
 ~~~
 
-Which renders to:
+Which will render to:
 
-> Einstein went on to present his findings mathematically: energy (&#x24;E&#x24;) equals mass (&#x24;m&#x24;) times the speed of light (&#x24;c&#x24;) squared, or &#x24;E=mc^2&#x24;.
+<div style="border: 1px solid; margin: 2em 0; padding: 1em 1.5em;">
+The formula $E=mc^2$ defines the energy $E$ of a particle in its rest frame as the product of mass ($m$) with the speed of light squared ($c^2$).
+</div>
 
-To make a stand-alone equation as a paragraph block, write your equation between the `$$` token, or between the `\[` and
-`\]` tokens:
+To display stand-alone equations on their own line, use `$$` token, or `\[` and `\]` tokens:
 
 ~~~ .tex
-$$E=mc^2$$
+$$ a^{2a} + b^{2b} + c^{2c} \ge a^{2b} + b^{2c} + c^{2a} $$
 ~~~
 
 ~~~ .tex
-\[E=mc^2\]
+\[ a^{2a} + b^{2b} + c^{2c} \ge a^{2b} + b^{2c} + c^{2a} \]
 ~~~
 
-Which renders to:
+Which will render to:
 
-> &#x24;&#x24;E=mc^2&#x24;&#x24;
+<div style="border: 1px solid; margin: 2em 0; padding: 1em 1.5em; text-align: center;">
+$$ a^{2a} + b^{2b} + c^{2c} \ge a^{2b} + b^{2c} + c^{2a} $$
+</div>
 
-### Notes
+### Common Issues
+
+### HTML
+
+Be careful when writing literal `&`, `<`, and `>` characters in HTML. Those characters are reserved in HTML syntax. Be
+sure to encode them into `&amp;`, `&lt;`, and `&gt;` so that they won’t have the potential to damage the document:
+
+~~~ .html
+<ul>
+  <li>The notation $a &lt; b$ means that $a$ is <strong>less than</strong> $b$.</li>
+  <li>The notation $a &gt; b$ means that $a$ is <strong>greater than</strong> $b$.</li>
+</ul>
+~~~
+
+Another way is to use the alternative expressions of those characters in KaTeX:
+
+~~~ .html
+<ul>
+  <li>The notation $a \lt b$ means that $a$ is <strong>less than</strong> $b$.</li>
+  <li>The notation $a \gt b$ means that $a$ is <strong>greater than</strong> $b$.</li>
+</ul>
+~~~
+
+In Markdown syntax (and perhaps in other HTML pre-processor syntax as well), those characters are usually automatically
+encoded if they are not properly tokenized into HTML elements. However, HTML pre-processors usually also have certain
+writing rules for special characters that do not necessarily need to be encoded when written in a raw HTML document.
 
 #### Markdown
 
-Currently, the `$` and `$$` tokens are safe to delimit the equations in a Markdown document. The alternative syntax
-still works, but you have to escape the `\` character twice because Markdown has a special treatment for that character.
-KaTeX will start rendering after your Markdown syntax has been converted to HTML.
+The `$` and `$$` delimiters are currently safe delimiters to write as it is in Markdown because they have no special
+role in Markdown syntax. However, it is highly recommended that characters such as `\` and `_` be escaped by preceding
+them with the `\` character so that they will appear as their literal character when successfully converted to HTML:
+
+~~~ .md
+- The notation $a \\lt b$ means that $a$ is **less than** $b$.
+- The notation $a \\gt b$ means that $a$ is **greater than** $b$.
+~~~
+
+But it wouldn’t hurt to escape the `$` character as well, because we don’t consider it to be part of the Markdown
+syntax, but rather just a piece of plain text in a HTML element that will later be parsed by KaTeX on the client side:
+
+~~~ .md
+- The notation \$a \\lt b\$ means that \$a\$ is **less than** \$b\$.
+- The notation \$a \\gt b\$ means that \$a\$ is **greater than** \$b\$.
+~~~
+
+Some external Markdown parsers may have special extensions that treat `$…$` token as KaTeX token, so that the the text
+in it does not need to be escaped as in Markdown’s code syntax. However, Mecha has chosen to use
+[its own Markdown parser](https://github.com/taufik-nurrohman/markdown), which is more stable and conforms to the
+[CommonMark specification](https://spec.commonmark.org), so it does not support the creation of new Markdown syntax.
+
+It can be tuned with a hook that can automatically double encode the special characters between the KaTeX tokens before
+they are converted to HTML, but this requires a pretty complicated tokenization because we need to ignore special
+characters in the code syntax, and we also need to ignore those that appear in the lines just below the raw HTML block
+tokens [^1]
+
+There are some ways to write the KaTeX syntax as it is (and to escape the KaTeX syntax in Markdown properly), but not by
+writing it in Markdown’s code syntax (the text in it will be ignored by KaTeX, so it won’t turn into mathematical
+equations):
+
+##### Markdown Escapes
+
+Special characters in Markdown can be rendered as they are when converted to HTML by preceding each character with the
+back-slash character:
+
+~~~ .md
+- The notation \$a \\lt b\$ means that \$a\$ is **less than** \$b\$.
+- The notation \$a \\gt b\$ means that \$a\$ is **greater than** \$b\$.
+~~~
+
+##### HTML Entities
+
+HTML entities that are equivalent to those characters can also be used, as they will be converted to their character
+literals in HTML (at least by my Markdown parser):
+
+~~~ .md
+- The notation &#36;a &#92;lt b&#36; means that &#36;a&#36; is **less than** &#36;b&#36;.
+- The notation &#36;a &#92;gt b&#36; means that &#36;a&#36; is **greater than** &#36;b&#36;.
+~~~
+
+~~~ .md
+- The notation &#x24;a &#x5c;lt b&#x24; means that &#x24;a&#x24; is **less than** &#x24;b&#x24;.
+- The notation &#x24;a &#x5c;gt b&#x24; means that &#x24;a&#x24; is **greater than** &#x24;b&#x24;.
+~~~
+
+##### HTML Blocks
+
+By writing the KaTeX syntax right after the HTML block token, it is not considered as part of the Markdown [^2], so you
+can write KaTeX syntax as it is in this situation:
+
+~~~ .md
+<ul>
+<li>The notation $a \lt b$ means that $a$ is <strong>less than</strong> $b$.</li>
+<li>The notation $a \gt b$ means that $a$ is <strong>greater than</strong> $b$.</li>
+</ul>
+~~~
+
+~~~ .md
+<ul>
+<li>
+The notation $a \lt b$ means that $a$ is <strong>less than</strong> $b$.
+</li>
+<li>
+The notation $a \gt b$ means that $a$ is <strong>greater than</strong> $b$.
+</li>
+</ul>
+~~~
+
+This one is ugly, but it conforms to [this](https://spec.commonmark.org/0.31.2#example-162) CommonMark specification:
+
+~~~ .md
+- The notation
+  <span>
+  $a \lt b$
+  </span> means that
+  <span>
+  $a$
+  </span> is <strong>less than</strong>
+  <span>
+  $b$
+  </span>.
+- The notation
+  <span>
+  $a \gt b$
+  </span> means that
+  <span>
+  $a$
+  </span> is <strong>greater than</strong>
+  <span>
+  $b$
+  </span>.
+~~~
+
+ [^1]: As documented in the [HTML block specification](https://spec.commonmark.org/0.31.2#html-blocks).
+ [^2]: HTML block was started by [start condition 6](https://spec.commonmark.org/0.31.2#example-148), so it will not end
+       the state until the first blank line.

@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "katex": "^0.16.9"
+  },
+  "devDependencies": {
+    "@taufik-nurrohman/factory": "*"
+  },
+  "private": true,
+  "scripts": {
+    "pack": "pack --clean=false --from=.factory --js-format=iife --js-name=_ --to=."
+  },
+  "type": "module"
+}
