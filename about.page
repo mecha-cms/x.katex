@@ -116,7 +116,7 @@ back-slash character:
 - The notation \$a \\gt b\$ means that \$a\$ is **greater than** \$b\$.
 ~~~
 
-##### HTML Entities
+##### HTML Escapes
 
 HTML entities that are equivalent to those characters can also be used, as they will be converted to their character
 literals in HTML (at least by my Markdown parser):
