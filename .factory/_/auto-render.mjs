@@ -64,7 +64,7 @@ const splitAtDelimiters = function(text, delimiters) {
             : text.slice(delimiters[i].left.length, index);
         let previousData = data.slice(-1).pop(),
             // Treat current data as plain text if previous data ends with any words or any numbers with optional space after them
-            currentData = previousData && /(\w|[+-]?\d+([,.]\d+)?\s*)$/.test(previousData.data) && rawData.slice(-1) === '$' ? {
+            currentData = previousData && /(\w|\b[+-]?\d+([,.]\d+)*\s*)$/.test(previousData.data) && rawData[0] === '$' ? {
                 type: "text",
                 data: rawData,
             } : {
@@ -75,7 +75,7 @@ const splitAtDelimiters = function(text, delimiters) {
             };
         text = text.slice(index + delimiters[i].right.length);
         // Treat current data as plain text if next data starts with any words or any numbers with optional space after them
-        if (currentData.type === "math" && /^(\w|\s*[+-]?\d+([,.]\d+)?)/.test(text) && currentData.rawData.slice(-1) === '$') {
+        if (currentData.type === "math" && /^(\w|\s*[+-]?\d+([,.]\d+)*\b)/.test(text) && currentData.rawData[0] === '$') {
             currentData.type = "text";
             currentData.data = currentData.rawData;
             delete currentData.display;
