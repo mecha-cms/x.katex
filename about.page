@@ -92,8 +92,8 @@ syntax, but rather just a piece of plain text in a HTML element that will later 
 - The notation \$a \\gt b\$ means that \$a\$ is **greater than** \$b\$.
 ~~~
 
-Some external Markdown parsers may have special extensions that treat `$…$` token as KaTeX token, so that the the text
-in it does not need to be escaped as in Markdown’s code syntax. However, Mecha has chosen to use
+Some external Markdown parsers may have special extensions that treat `$…$` token as KaTeX token, so that the text in it
+does not need to be escaped as in Markdown’s code syntax. However, Mecha has chosen to use
 [its own Markdown parser](https://github.com/taufik-nurrohman/markdown), which is more stable and conforms to the
 [CommonMark specification](https://spec.commonmark.org), so it does not support the creation of new Markdown syntax.
 
